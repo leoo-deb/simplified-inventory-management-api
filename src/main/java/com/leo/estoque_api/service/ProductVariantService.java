@@ -52,4 +52,9 @@ public class ProductVariantService {
         return productVariantMapper.toProductVariantDTO(productVariant);
     }
 
+    public ProductVariant findById(UUID id) {
+        return productVariantRepository.findById(id)
+                .orElseThrow(() -> new ProductVariantNotFoundException(id));
+    }
+
 }

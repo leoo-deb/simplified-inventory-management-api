@@ -31,8 +31,14 @@ public class Movement {
     @Column(nullable = false)
     private Long quantity;
 
+    @Column(nullable = false)
+    private Long oldStock;
+
+    @Column(nullable = false)
+    private Long newStock;
+
     @ManyToOne
-    @JoinColumn(nullable = false, name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @CreationTimestamp

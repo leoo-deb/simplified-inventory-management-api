@@ -13,6 +13,7 @@ public interface MovementMapper {
     @Mapping(target = "user", ignore = true)
     Movement toMovement(MovementRequestDTO movementRequest);
 
+    @Mapping(source = "productVariant.id", target = "variantId")
     MovementResponseDTO toMovementDTO(Movement movement);
 
     List<MovementResponseDTO> toCollectionMovementDTO(List<Movement> movements);

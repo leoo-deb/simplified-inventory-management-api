@@ -6,11 +6,11 @@ import java.time.OffsetDateTime;
 
 public record MovementResponseDTO(
         Long id,
-        String productVariantId,
-        Long quantity,
-        User user,
-        OffsetDateTime dateTime,
+        String variantId,
         String type,
+        Long quantity,
+        Long oldStock,
+        Long newStock,
+        OffsetDateTime dateTime,
         String description
-) {
-}
+) {}

@@ -5,10 +5,11 @@ import lombok.Getter;
 @Getter
 public enum TypeMovements {
 
-    ENTRY("Entrada"),
-    EXIT("Saída"),
-    REGISTRATION("Registro"),
-    DEACTIVATION("Desativação"),
+    ENTRY("Entry"),
+    EXIT("Exit"),
+    ADJUSTMENT("Adjustment"),
+    REGISTRATION("Registration"),
+    DEACTIVATION("Deactivation"),
     LOSS("Loss");
 
     private final String type;
