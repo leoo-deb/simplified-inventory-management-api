@@ -34,8 +34,8 @@ public class ProductVariantService {
     public ProductVariantResponseDTO createVariant(UUID productId, ProductVariantRequestDTO productVariantRequestDTO) {
         Product product = productService.findById(productId);
 
-        if (!product.isActive()) {
-            throw new BusinessRuleException(String.format("It is not possible to perform operations on the product " +
+        if (product.isActive()) {
+            throw new BusinessRuleException(String.format("Cannot possible to perform operations on the product " +
                     "with code '%s', as it is unavailable.", productId));
         }
 
@@ -46,9 +46,9 @@ public class ProductVariantService {
         return productVariantMapper.toProductVariantDTO(productVariantSaved);
     }
 
-    public ProductVariantResponseDTO findBySku(String sku) {
-        ProductVariant productVariant = productVariantRepository.findBySku(sku)
-                .orElseThrow(() -> new ProductVariantNotFoundException(sku));
+    public ProductVariantResponseDTO findBySku(UUID id, String sku) {
+        ProductVariant productVariant = productVariantRepository.findByIdAndSku(id, sku)
+                .orElseThrow(() -> new ProductVariantNotFoundException(id, sku));
         return productVariantMapper.toProductVariantDTO(productVariant);
     }
 

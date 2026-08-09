@@ -4,20 +4,15 @@ import com.leo.estoque_api.dto.category.CategoryMapper;
 import com.leo.estoque_api.dto.category.CategoryRequestDTO;
 import com.leo.estoque_api.dto.category.CategoryResponseDTO;
 import com.leo.estoque_api.dto.product.ProductMapper;
-import com.leo.estoque_api.dto.product.ProductResponseDTO;
 import com.leo.estoque_api.exceptions.BusinessRuleException;
 import com.leo.estoque_api.exceptions.CategoryNotFoundException;
 import com.leo.estoque_api.model.Category;
-import com.leo.estoque_api.model.Product;
 import com.leo.estoque_api.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +23,7 @@ public class CategoryService {
     private final ProductMapper productMapper;
 
     @Transactional(readOnly = true)
-    public Page<CategoryResponseDTO> listAllCategories(Pageable pageable) {
+    public Page<CategoryResponseDTO> listAllCategoriesPage(Pageable pageable) {
         return categoryRepository.findAll(pageable)
                 .map(categoryMapper::toCategoryDTO);
     }

@@ -38,8 +38,8 @@ public class ProductVariantController {
     }
 
     @GetMapping("/variants/by-sku")
-    public ResponseEntity<ProductVariantResponseDTO> findBySku(@RequestParam String sku) {
-        return ResponseEntity.ok(productVariantService.findBySku(sku));
+    public ResponseEntity<ProductVariantResponseDTO> findBySku(@PathVariable UUID productId, @RequestParam String sku) {
+        return ResponseEntity.ok(productVariantService.findBySku(productId, sku));
     }
 
 }

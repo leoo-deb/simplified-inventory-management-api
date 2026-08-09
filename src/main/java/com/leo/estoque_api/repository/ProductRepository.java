@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("FROM Product p JOIN FETCH p.category")
-    List<Product> findAll();
+    Page<Product> findAll(Pageable pageable);
 
     boolean existsByNameIgnoreCase(String name);
 

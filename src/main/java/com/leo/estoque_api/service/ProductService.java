@@ -9,7 +9,6 @@ import com.leo.estoque_api.model.Category;
 import com.leo.estoque_api.model.Product;
 import com.leo.estoque_api.repository.MovementRepository;
 import com.leo.estoque_api.repository.ProductRepository;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +42,7 @@ public class ProductService {
     @Transactional
     public ProductResponseDTO registrationProduct(ProductRequestDTO dto) {
         Product product = productMapper.toProduct(dto);
-        product.toActive();
+        product.setActive(Boolean.TRUE);
 
         if (productRepository.existsByNameIgnoreCase(dto.name())) {
             throw new BusinessRuleException(String.format("Product with name '%s' already exists.", dto.name()));
@@ -92,8 +91,8 @@ public class ProductService {
 
     private void validateProduct(Product product, ProductRequestDTO dto) {
         if (!product.isActive()) {
-            throw new BusinessRuleException(String.format("Não é possível realizar " +
-                    "operações com o produto de código '%s', pois está inativo.", product.getId()));
+            throw new BusinessRuleException(String.format("Cannot possible to perform operations with the " +
+                    "product with code '%s' because it is inactive.", product.getId()));
         }
 
         Category category = categoryService.findById(dto.categoryId());

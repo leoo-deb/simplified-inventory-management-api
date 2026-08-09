@@ -25,7 +25,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(nullable = false, name = "category_id")
     private Category category;
 
@@ -57,10 +57,18 @@ public class Product {
     }
 
     public void toActive() {
+        if (this.active) {
+            throw new BusinessRuleException("This product already is active.");
+        }
+
         setActive(Boolean.TRUE);
     }
 
     public void toInactive() {
+        if (!this.active) {
+            throw new BusinessRuleException("This product already is inactive.");
+        }
+
         setActive(Boolean.FALSE);
     }
 
