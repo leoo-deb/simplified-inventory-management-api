@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface ProductVariantRepository extends JpaRepository<ProductVariant, UUID> {
 
     @Query("FROM ProductVariant s JOIN FETCH s.product")
-    Page<ProductVariant> findAll(@Nonnull Pageable pageable);
+    Page<ProductVariant> findAll(Pageable pageable);
 
     Page<ProductVariant> findAllByProductId(UUID productId, Pageable pageable);
 

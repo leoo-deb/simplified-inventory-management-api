@@ -1,6 +1,7 @@
 package com.leo.estoque_api.controller;
 
 import com.leo.estoque_api.dto.common.PageResponse;
+import com.leo.estoque_api.dto.movement.MovementFiltersDTO;
 import com.leo.estoque_api.dto.movement.MovementRequestDTO;
 import com.leo.estoque_api.dto.movement.MovementResponseDTO;
 import com.leo.estoque_api.exceptions.BusinessRuleException;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @RestController
@@ -35,8 +37,8 @@ public class MovementController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<MovementResponseDTO>> listAllMovements(Pageable pageable) {
-        Page<MovementResponseDTO> movementResponsePage = movementService.listAllMovements(pageable);
+    public ResponseEntity<PageResponse<MovementResponseDTO>> listAllMovements(Pageable pageable, MovementFiltersDTO movementFilters) {
+        Page<MovementResponseDTO> movementResponsePage = movementService.listAllMovements(pageable, movementFilters);
         return ResponseEntity.ok(new PageResponse<>(movementResponsePage));
     }
 

@@ -34,7 +34,7 @@ public class ProductVariantService {
     public ProductVariantResponseDTO createVariant(UUID productId, ProductVariantRequestDTO productVariantRequestDTO) {
         Product product = productService.findById(productId);
 
-        if (product.isActive()) {
+        if (!product.isActive()) {
             throw new BusinessRuleException(String.format("Cannot possible to perform operations on the product " +
                     "with code '%s', as it is unavailable.", productId));
         }

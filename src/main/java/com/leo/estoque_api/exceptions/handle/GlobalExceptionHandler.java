@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
-    private static final String MSG_GENERIC_ERROR = "Ocorreu um erro inesperado no sistema. Tente novamente " +
-            "e se o problema persistir, entre em contato com um administrador do sistema.";
+    private static final String MSG_GENERIC_ERROR = "An unexpected system error occurred. Please try again, " +
+            "and if the problem persists, contact a system administrator.";
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         TypeError type = TypeError.INVALID_BODY;
-        String message = "O corpo da requisção está inválido. Verifique a sintaxe.";
+        String message = "The request body is invalid. Check the syntax.";
 
         ErrorResponse errorResponse = createErrorResponse((HttpStatus) status, type, message).build();
         return handleExceptionInternal(ex, errorResponse, headers, status, request);
@@ -52,9 +52,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .collect(Collectors.joining("."));
 
         TypeError type = TypeError.INVALID_BODY;
-        String message = String.format(
-                "A propriedade '%s' não existe. Corrija ou remova essa "
-                        + "propriedade e tente novamente.", cause);
+        String message = String.format("The property '%s' does not exist. Correct or remove " +
+                "the property and try again.", cause);
 
         ErrorResponse errorResponse = createErrorResponse((HttpStatus) status, type, message).build();
         return handleExceptionInternal(ex, errorResponse, headers, status, request);
@@ -68,11 +67,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         TypeError type = TypeError.INVALID_BODY;
         String message = String.format(
-                "A propriedade '%s' recebeu um valor '%s', que é um valor inválido. Corrija e informe o valor " +
-                        "compativel com tipo %s.",
+                "The property '%s' received the value '%s', which is invalid. Please correct it and provide a " +
+                        "value compatible with the type %s.",
                 cause,
                 ex.getValue(),
-                ex.getTargetType().getSimpleName());
+                ex.getTargetType().getSimpleName()
+        );
 
         ErrorResponse errorResponse = createErrorResponse((HttpStatus) status, type, message).build();
         return handleExceptionInternal(ex, errorResponse, headers, status, request);
@@ -82,7 +82,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
                                                                   HttpStatusCode status, WebRequest request) {
-        String messageError = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
+        String messageError = "One or more fields are invalid. Please fill them out correctly and try again.";
         TypeError type = TypeError.INVALID_DATA;
 
         List<ErrorResponse.Field> fields = ex.getFieldErrors().stream()
