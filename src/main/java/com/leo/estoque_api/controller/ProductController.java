@@ -1,9 +1,9 @@
 package com.leo.estoque_api.controller;
 
 import com.leo.estoque_api.dto.common.PageResponse;
+import com.leo.estoque_api.dto.product.ProductFilters;
 import com.leo.estoque_api.dto.product.ProductRequestDTO;
 import com.leo.estoque_api.dto.product.ProductResponseDTO;
-import com.leo.estoque_api.dto.productvariant.ProductVariantMapper;
 import com.leo.estoque_api.exceptions.BusinessRuleException;
 import com.leo.estoque_api.exceptions.CategoryNotFoundException;
 import com.leo.estoque_api.service.ProductService;
@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -28,24 +27,25 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponseDTO> save(@RequestBody @Valid ProductRequestDTO productRequestDTO) {
         try {
+            ProductResponseDTO productResponse = productService.registrationProduct(productRequestDTO);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(productService.registrationProduct(productRequestDTO));
+                    .body(productResponse);
         } catch (CategoryNotFoundException e) {
             throw new BusinessRuleException(e.getMessage(), e);
         }
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<ProductResponseDTO>> listAllProducts(Pageable pageable) {
-        return ResponseEntity.ok(new PageResponse<>(productService.listAllProductsPage(pageable)));
+    public ResponseEntity<PageResponse<ProductResponseDTO>> listAllProducts(Pageable pageable, ProductFilters filters) {
+        return ResponseEntity.ok(new PageResponse<>(productService.getAllProducts(pageable, filters)));
     }
 
-    @GetMapping("/categories/{idCategory}")
+    @GetMapping("/categories/{categoryId}")
     public ResponseEntity<PageResponse<ProductResponseDTO>> listAllProductsByCategory(@PathVariable Long idCategory,
                                                                                       Pageable pageable) {
         Page<ProductResponseDTO> productResponsePage = productService
-                .listAllProductsByCategory(idCategory, pageable);
+                .getAllProductsByCategory(idCategory, pageable);
         return ResponseEntity.ok(new PageResponse<>(productResponsePage));
     }
 

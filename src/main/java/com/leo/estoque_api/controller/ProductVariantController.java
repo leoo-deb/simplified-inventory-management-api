@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,7 +31,7 @@ public class ProductVariantController {
     public ResponseEntity<PageResponse<ProductVariantResponseDTO>> findAllByProductId(@PathVariable UUID productId,
                                                                                       Pageable pageable) {
         Page<ProductVariantResponseDTO> productVariantResponseDTOs = productVariantService
-                .findAllProductVariants(productId, pageable);
+                .getAllProductVariants(productId, pageable);
         return ResponseEntity.ok(new PageResponse<>(productVariantResponseDTOs));
 
     }

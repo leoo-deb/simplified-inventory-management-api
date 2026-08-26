@@ -1,5 +1,6 @@
 package com.leo.estoque_api.service;
 
+import com.leo.estoque_api.dto.product.ProductFilters;
 import com.leo.estoque_api.dto.product.ProductMapper;
 import com.leo.estoque_api.exceptions.ProductNotFoundException;
 import com.leo.estoque_api.dto.product.ProductRequestDTO;
@@ -9,6 +10,7 @@ import com.leo.estoque_api.model.Category;
 import com.leo.estoque_api.model.Product;
 import com.leo.estoque_api.repository.MovementRepository;
 import com.leo.estoque_api.repository.ProductRepository;
+import com.leo.estoque_api.repository.specs.ProductSpecs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
+
+import static com.leo.estoque_api.repository.specs.ProductSpecs.byFilters;
 
 @Service
 @RequiredArgsConstructor
@@ -28,13 +32,13 @@ public class ProductService {
     private MovementRepository movementsRepository;
 
     @Transactional(readOnly = true)
-    public Page<ProductResponseDTO> listAllProductsPage(Pageable pageable) {
-        return productRepository.findAll(pageable)
+    public Page<ProductResponseDTO> getAllProducts(Pageable pageable, ProductFilters filters) {
+        return productRepository.findAll(byFilters(filters), pageable)
                 .map(productMapper::toProductDTO);
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductResponseDTO> listAllProductsByCategory(Long idCategory, Pageable pageable) {
+    public Page<ProductResponseDTO> getAllProductsByCategory(Long idCategory, Pageable pageable) {
         return productRepository.findAllByCategoryId(idCategory, pageable)
                 .map(productMapper::toProductDTO);
     }

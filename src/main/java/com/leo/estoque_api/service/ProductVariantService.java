@@ -25,7 +25,7 @@ public class ProductVariantService {
     private final ProductService productService;
 
     @Transactional(readOnly = true)
-    public Page<ProductVariantResponseDTO> findAllProductVariants(UUID productId, Pageable pageable) {
+    public Page<ProductVariantResponseDTO> getAllProductVariants(UUID productId, Pageable pageable) {
         return productVariantRepository.findAllByProductId(productId, pageable)
                 .map(productVariantMapper::toProductVariantDTO);
     }
