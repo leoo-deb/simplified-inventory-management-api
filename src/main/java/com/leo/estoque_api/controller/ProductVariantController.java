@@ -14,29 +14,35 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/products/{productId}")
+@RequestMapping("/products/{productId}/variants")
 public class ProductVariantController {
 
     @Autowired
     private ProductVariantService productVariantService;
 
-    @PostMapping("/variants")
+    @PostMapping
     public ResponseEntity<ProductVariantResponseDTO> createVariant(@PathVariable UUID productId,
-                                                                   @RequestBody ProductVariantRequestDTO productVariantRequestDTO) {
+                                                                   @RequestBody ProductVariantRequestDTO variantRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(productVariantService.createVariant(productId, productVariantRequestDTO));
+                .body(productVariantService.createVariant(productId, variantRequest));
     }
 
-    @GetMapping("/variants")
+    @GetMapping
     public ResponseEntity<PageResponse<ProductVariantResponseDTO>> findAllByProductId(@PathVariable UUID productId,
                                                                                       Pageable pageable) {
         Page<ProductVariantResponseDTO> productVariantResponseDTOs = productVariantService
                 .getAllProductVariants(productId, pageable);
         return ResponseEntity.ok(new PageResponse<>(productVariantResponseDTOs));
-
     }
 
-    @GetMapping("/variants/by-sku")
+    @GetMapping("/{variantId}")
+    public ResponseEntity<ProductVariantResponseDTO> findById(@PathVariable UUID productId,
+                                                              @PathVariable UUID variantId) {
+        ProductVariantResponseDTO variantResponse = productVariantService.findById(productId, variantId);
+        return ResponseEntity.ok(variantResponse);
+    }
+
+    @GetMapping("/by-sku")
     public ResponseEntity<ProductVariantResponseDTO> findBySku(@PathVariable UUID productId, @RequestParam String sku) {
         return ResponseEntity.ok(productVariantService.findBySku(productId, sku));
     }

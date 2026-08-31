@@ -15,9 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
 @RestController
 @RequestMapping("/movements")
 public class MovementController {
@@ -38,7 +35,7 @@ public class MovementController {
 
     @GetMapping
     public ResponseEntity<PageResponse<MovementResponseDTO>> listAllMovements(Pageable pageable, MovementFiltersDTO movementFilters) {
-        Page<MovementResponseDTO> movementResponsePage = movementService.listAllMovements(pageable, movementFilters);
+        Page<MovementResponseDTO> movementResponsePage = movementService.getAllMovements(pageable, movementFilters);
         return ResponseEntity.ok(new PageResponse<>(movementResponsePage));
     }
 

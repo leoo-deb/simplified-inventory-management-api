@@ -14,10 +14,13 @@ import java.util.UUID;
 @Repository
 public interface ProductVariantRepository extends JpaRepository<ProductVariant, UUID> {
 
-    @Query("FROM ProductVariant s JOIN FETCH s.product")
+    @Query("FROM ProductVariant v JOIN FETCH v.product")
     Page<ProductVariant> findAll(Pageable pageable);
 
     Page<ProductVariant> findAllByProductId(UUID productId, Pageable pageable);
+
+    @Query("FROM ProductVariant v WHERE v.product.id = :productId AND v.id = :variantId")
+    Optional<ProductVariant> findById(UUID productId, UUID variantId);
 
     Optional<ProductVariant> findByIdAndSku(UUID id, String sku);
 

@@ -3,18 +3,16 @@ package com.leo.estoque_api.model.enums;
 import lombok.Getter;
 
 @Getter
-public enum TypeMovements {
+public enum TypeMovement {
 
     ENTRY("Entry"),
     EXIT("Exit"),
     ADJUSTMENT("Adjustment"),
-    REGISTRATION("Registration"),
-    DEACTIVATION("Deactivation"),
     LOSS("Loss");
 
     private final String type;
 
-    TypeMovements(String type) {
+    TypeMovement(String type) {
         this.type = type;
     }
 

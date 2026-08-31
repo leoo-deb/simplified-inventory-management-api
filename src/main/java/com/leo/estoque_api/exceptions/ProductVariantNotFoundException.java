@@ -10,4 +10,8 @@ public class ProductVariantNotFoundException extends EntityNotFoundException {
     public ProductVariantNotFoundException(UUID id) {
         super(String.format("Variant with code '%s' not found.", id));
     }
+
+    public ProductVariantNotFoundException(UUID productId, UUID variantId) {
+        super(String.format("There is no code Variant '%s' for Product code '%s'.", variantId, productId));
+    }
 }

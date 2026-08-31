@@ -26,6 +26,7 @@ public class ProductVariantService {
 
     @Transactional(readOnly = true)
     public Page<ProductVariantResponseDTO> getAllProductVariants(UUID productId, Pageable pageable) {
+        productService.findById(productId);
         return productVariantRepository.findAllByProductId(productId, pageable)
                 .map(productVariantMapper::toProductVariantDTO);
     }
@@ -55,6 +56,15 @@ public class ProductVariantService {
     public ProductVariant findById(UUID id) {
         return productVariantRepository.findById(id)
                 .orElseThrow(() -> new ProductVariantNotFoundException(id));
+    }
+
+    public ProductVariantResponseDTO findById(UUID productId, UUID variantId) {
+        productService.findById(productId);
+
+        ProductVariant variant = productVariantRepository.findById(productId, variantId)
+                .orElseThrow(() -> new ProductVariantNotFoundException(productId, variantId));
+
+        return productVariantMapper.toProductVariantDTO(variant);
     }
 
 }

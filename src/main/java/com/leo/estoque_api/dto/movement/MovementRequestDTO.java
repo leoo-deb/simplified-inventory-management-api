@@ -1,6 +1,6 @@
 package com.leo.estoque_api.dto.movement;
 
-import com.leo.estoque_api.model.enums.TypeMovements;
+import com.leo.estoque_api.model.enums.TypeMovement;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -11,9 +11,9 @@ public record MovementRequestDTO(
         UUID variantId,
 
         @NotNull(message = "Type is required.")
-        TypeMovements type,
+        TypeMovement type,
 
-        @NotNull(message = "Quantity is required")
+        @NotNull(message = "Quantity is required.")
         @Positive(message = "Cannot record a negative quantity.")
         Long quantity,
 

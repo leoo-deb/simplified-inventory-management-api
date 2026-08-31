@@ -8,15 +8,11 @@ import com.leo.estoque_api.exceptions.BusinessRuleException;
 import com.leo.estoque_api.model.Movement;
 import com.leo.estoque_api.model.ProductVariant;
 import com.leo.estoque_api.repository.MovementRepository;
-import com.leo.estoque_api.repository.specs.MovementSpecs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 
 import static com.leo.estoque_api.repository.specs.MovementSpecs.byFilters;
 
@@ -29,7 +25,7 @@ public class MovementService {
     private final MovementMapper movementMapper;
 
     @Transactional(readOnly = true)
-    public Page<MovementResponseDTO> listAllMovements(Pageable pageable, MovementFiltersDTO movementFilters) {
+    public Page<MovementResponseDTO> getAllMovements(Pageable pageable, MovementFiltersDTO movementFilters) {
         return movementRepository
                 .findAll(byFilters(movementFilters), pageable)
                 .map(movementMapper::toMovementDTO);

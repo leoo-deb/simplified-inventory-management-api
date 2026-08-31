@@ -1,6 +1,6 @@
 package com.leo.estoque_api.model;
 
-import com.leo.estoque_api.model.enums.TypeMovements;
+import com.leo.estoque_api.model.enums.TypeMovement;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,7 +26,7 @@ public class Movement {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TypeMovements type;
+    private TypeMovement type;
 
     @Column(nullable = false)
     private Long quantity;
