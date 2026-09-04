@@ -1,0 +1,11 @@
+package com.leo.estoque_api.dto.photovariant;
+
+import java.util.UUID;
+
+public record PhotoVariantResponseDTO(
+        UUID id,
+        String contentType,
+        String url,
+        Long size
+) {
+}
