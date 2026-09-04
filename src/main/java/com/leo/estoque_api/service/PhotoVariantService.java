@@ -3,6 +3,7 @@ package com.leo.estoque_api.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.leo.estoque_api.config.amazons3.BucketS3;
 import com.leo.estoque_api.dto.photovariant.PhotoVariantRequestDTO;
 import com.leo.estoque_api.dto.photovariant.PhotoVariantResponseDTO;
 import com.leo.estoque_api.exceptions.PhotoStorageException;
@@ -12,7 +13,6 @@ import com.leo.estoque_api.model.ProductVariant;
 import com.leo.estoque_api.repository.PhotoVariantRepository;
 import com.leo.estoque_api.repository.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,17 +25,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PhotoVariantService {
 
-    @Value("${aws.bucket.name}")
-    private String bucketName;
-
-    @Value("${aws.bucket.directory}")
-    private String bucketDirectory;
-
     private final PhotoVariantRepository photoRepository;
     private final ProductVariantRepository variantRepository;
+    private final BucketS3 bucket;
     private final AmazonS3 amazonS3;
 
-    private static final String MAX_SIZE_MB = "3MB";
+    private static final String MAX_SIZE_PHOTO_MB = "3MB";
     private static final List<String> ALLOWED_CONTENT_TYPE = List.of(
             MediaType.IMAGE_PNG_VALUE,
             MediaType.IMAGE_JPEG_VALUE
@@ -49,7 +44,7 @@ public class PhotoVariantService {
         validatePhoto(dto);
 
         String newNameFile = UUID.randomUUID().toString() + "_" + dto.name();
-        String photoUrl = uploadPhoto(bucketName, newNameFile, dto);
+        String photoUrl = uploadPhoto(bucket.getBucketName(), newNameFile, dto);
 
         PhotoVariant photoVariant = PhotoVariant.builder()
                 .productVariant(variant)
@@ -63,6 +58,7 @@ public class PhotoVariantService {
 
         return new PhotoVariantResponseDTO(
                 photoVariant.getId(),
+                photoVariant.getName(),
                 photoVariant.getContentType(),
                 photoVariant.getUrl(),
                 photoVariant.getSize()
@@ -88,25 +84,24 @@ public class PhotoVariantService {
 
             return amazonS3.getUrl(bucketName, pathFile).toString();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new PhotoStorageException("Cannot possible to upload file from Amazon S3.");
         }
     }
 
     private void validatePhoto(PhotoVariantRequestDTO dto) {
-        DataSize dataSize = DataSize.parse(MAX_SIZE_MB);
+        DataSize dataSize = DataSize.parse(MAX_SIZE_PHOTO_MB);
 
         if (dto.size() > dataSize.toBytes()) {
-            throw new PhotoStorageException(String.format("Cannot possible ot upload files larger than %s.", MAX_SIZE_MB));
+            throw new PhotoStorageException(String.format("Cannot possible ot upload files larger than %s.", MAX_SIZE_PHOTO_MB));
         }
 
-        if (ALLOWED_CONTENT_TYPE.contains(dto.contentType())) {
+        if (!ALLOWED_CONTENT_TYPE.contains(dto.contentType())) {
             throw new PhotoStorageException("ContentType not allowed.");
         }
     }
 
     private String getPathFile(String nameFile) {
-        return String.format("%s/%s", bucketDirectory, nameFile);
+        return String.format("%s/%s", bucket.getBucketDirectory(), nameFile);
     }
 
 }
