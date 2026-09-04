@@ -5,14 +5,19 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import com.leo.estoque_api.exceptions.BusinessRuleException;
 import com.leo.estoque_api.exceptions.EntityNotFoundException;
+import com.leo.estoque_api.exceptions.StorageContentTypeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -28,9 +33,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             "and if the problem persists, contact a system administrator.";
 
     @Override
+    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        TypeError type = TypeError.INVALID_BODY;
+        String requestPath = request.getDescription(false).replace("uri=", "");
+
+        ErrorResponse errorResponse = createErrorResponse(
+                (HttpStatus) status,
+                type,
+                requestPath,
+                ex.getMessage()
+        ).build();
+
+        return handleExceptionInternal(ex, errorResponse, headers, status, request);
+    }
+
+    @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
                                                                   HttpStatusCode status, WebRequest request) {
         Throwable rootCause = ex.getCause();
+        String requestPath = request.getDescription(false).replace("uri=", "");
 
         if (rootCause instanceof InvalidFormatException) {
             return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
@@ -41,7 +62,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         TypeError type = TypeError.INVALID_BODY;
         String message = "The request body is invalid. Check the syntax.";
 
-        ErrorResponse errorResponse = createErrorResponse((HttpStatus) status, type, message).build();
+        ErrorResponse errorResponse = createErrorResponse((HttpStatus) status, type, requestPath, message).build();
         return handleExceptionInternal(ex, errorResponse, headers, status, request);
     }
 
@@ -50,12 +71,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String cause = ex.getPath().stream()
                 .map(JsonMappingException.Reference::getFieldName)
                 .collect(Collectors.joining("."));
+        String requestPath = request.getDescription(false).replace("uri=", "");
 
         TypeError type = TypeError.INVALID_BODY;
         String message = String.format("The property '%s' does not exist. Correct or remove " +
                 "the property and try again.", cause);
 
-        ErrorResponse errorResponse = createErrorResponse((HttpStatus) status, type, message).build();
+        ErrorResponse errorResponse = createErrorResponse((HttpStatus) status, type, requestPath, message).build();
         return handleExceptionInternal(ex, errorResponse, headers, status, request);
     }
 
@@ -64,6 +86,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String cause = ex.getPath().stream()
                 .map(JsonMappingException.Reference::getFieldName)
                 .collect(Collectors.joining("."));
+        String requestPath = request.getDescription(false).replace("uri=", "");
 
         TypeError type = TypeError.INVALID_BODY;
         String message = String.format(
@@ -74,7 +97,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getTargetType().getSimpleName()
         );
 
-        ErrorResponse errorResponse = createErrorResponse((HttpStatus) status, type, message).build();
+        ErrorResponse errorResponse = createErrorResponse((HttpStatus) status, type, requestPath, message).build();
         return handleExceptionInternal(ex, errorResponse, headers, status, request);
     }
 
@@ -84,6 +107,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpStatusCode status, WebRequest request) {
         String messageError = "One or more fields are invalid. Please fill them out correctly and try again.";
         TypeError type = TypeError.INVALID_DATA;
+        String requestPath = request.getDescription(false).replace("uri=", "");
 
         List<ErrorResponse.Field> fields = ex.getFieldErrors().stream()
                 .map(fieldError -> {
@@ -96,7 +120,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 })
                 .toList();
 
-        ErrorResponse errorResponse = createErrorResponse((HttpStatus) status, type, messageError)
+        ErrorResponse errorResponse = createErrorResponse((HttpStatus) status, type, requestPath, messageError)
                 .fields(fields).build();
 
         return handleExceptionInternal(ex, errorResponse, headers, status, request);
@@ -106,8 +130,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleBusinessRuleException(Exception ex, WebRequest request) {
         TypeError type = TypeError.SYSTEM_ERROR;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        String requestPath = request.getDescription(false).replace("uri=", "");
 
-        ErrorResponse errorResponse = createErrorResponse(status, type, MSG_GENERIC_ERROR).build();
+        ErrorResponse errorResponse = createErrorResponse(status, type, requestPath, MSG_GENERIC_ERROR).build();
+        return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(StorageContentTypeException.class)
+    public ResponseEntity<Object> handleStorageContentTypeException(StorageContentTypeException ex, WebRequest request) {
+        TypeError type = TypeError.INVALID_BODY;
+        HttpStatus status = HttpStatus.NOT_ACCEPTABLE;
+        String requestPath = request.getDescription(false).replace("uri=", "");
+
+        ErrorResponse errorResponse = createErrorResponse(
+                status,
+                type,
+                requestPath,
+                ex.getMessage()
+        ).build();
+
         return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), status, request);
     }
 
@@ -116,8 +157,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         TypeError type = TypeError.BUSINESS_ROLE_VIOLATION;
         String message = ex.getMessage();
         HttpStatus status = HttpStatus.BAD_REQUEST;
+        String requestPath = request.getDescription(false).replace("uri=", "");
 
-        ErrorResponse errorResponse = createErrorResponse(status, type, message).build();
+        ErrorResponse errorResponse = createErrorResponse(status, type, requestPath, message).build();
 
         return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), status, request);
     }
@@ -127,8 +169,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         TypeError type = TypeError.ENTITY_NOT_FOUND;
         String message = ex.getMessage();
         HttpStatus status = HttpStatus.NOT_FOUND;
+        String requestPath = request.getDescription(false).replace("uri=", "");
 
-        ErrorResponse errorResponse = createErrorResponse(status, type, message).build();
+        ErrorResponse errorResponse = createErrorResponse(status, type, requestPath, message).build();
 
         return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), status, request);
     }
@@ -136,16 +179,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
                                                              HttpStatusCode statusCode, WebRequest request) {
+        String requestPath = request.getDescription(false).replace("uri=", "");
+
         if (body == null) {
             body = createErrorResponse(
                     (HttpStatus) statusCode,
                     TypeError.SYSTEM_ERROR,
+                    requestPath,
                     HttpStatus.valueOf(statusCode.value()).getReasonPhrase()
             ).build();
         } else if (body instanceof String) {
             body = createErrorResponse(
                     (HttpStatus) statusCode,
                     TypeError.SYSTEM_ERROR,
+                    requestPath,
                     (String) body
             ).build();
         }
@@ -153,9 +200,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
     }
 
-    public ErrorResponse.ErrorResponseBuilder createErrorResponse(HttpStatus status, TypeError type, String message) {
+    public ErrorResponse.ErrorResponseBuilder createErrorResponse(HttpStatus status, TypeError type, String path, String message) {
         return ErrorResponse.builder()
                 .timestamp(OffsetDateTime.now())
+                .path(path)
                 .status(status.value())
                 .error(type.getType())
                 .message(message);

@@ -26,9 +26,6 @@ public class ProductVariantController {
     @Autowired
     private ProductVariantService productVariantService;
 
-    @Autowired
-    private PhotoVariantService photoService;
-
     @PostMapping
     public ResponseEntity<ProductVariantResponseDTO> createVariant(@PathVariable UUID productId,
                                                                    @RequestBody ProductVariantRequestDTO variantRequest) {
@@ -54,23 +51,6 @@ public class ProductVariantController {
     @GetMapping("/by-sku")
     public ResponseEntity<ProductVariantResponseDTO> findBySku(@PathVariable UUID productId, @RequestParam String sku) {
         return ResponseEntity.ok(productVariantService.findBySku(productId, sku));
-    }
-
-    @PutMapping(path = "{variantId}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<PhotoVariantResponseDTO> updatePhoto(@PathVariable UUID productId,
-                                                               @PathVariable UUID variantId,
-                                                               @RequestParam MultipartFile image)
-            throws IOException {
-        PhotoVariantRequestDTO photoRequest = new PhotoVariantRequestDTO(
-                image.getOriginalFilename(),
-                image.getContentType(),
-                image.getSize(),
-                image.getInputStream()
-        );
-
-        PhotoVariantResponseDTO photoResponse = photoService.updatePhoto(productId, variantId, photoRequest);
-
-        return ResponseEntity.ok(photoResponse);
     }
 
 }

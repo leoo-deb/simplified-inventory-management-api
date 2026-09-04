@@ -15,6 +15,7 @@ import java.util.List;
 public class ErrorResponse {
 
     private OffsetDateTime timestamp;
+    private String path;
     private Integer status;
     private String error;
     private String message;
