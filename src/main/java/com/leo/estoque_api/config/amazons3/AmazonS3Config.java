@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class AmazonS3Config {
 
     @Autowired
-    private BucketS3 bucket;
+    private S3 bucket;
 
     @Bean
     AmazonS3 amazonS3() {

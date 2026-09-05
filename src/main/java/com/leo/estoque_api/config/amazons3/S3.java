@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-public class BucketS3 {
+public class S3 {
 
     @Value("${aws.service.s3.bucket.name}")
     private String bucketName;

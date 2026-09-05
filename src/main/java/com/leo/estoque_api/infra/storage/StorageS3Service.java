@@ -1,10 +1,10 @@
-package com.leo.estoque_api.infra;
+package com.leo.estoque_api.infra.storage;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.leo.estoque_api.config.amazons3.BucketS3;
+import com.leo.estoque_api.config.amazons3.S3;
 import com.leo.estoque_api.dto.photovariant.PhotoVariantRequestDTO;
 import com.leo.estoque_api.exceptions.PhotoStorageException;
 import com.leo.estoque_api.exceptions.StorageContentTypeException;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
-import org.springframework.web.HttpMediaTypeNotAcceptableException;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class StorageS3Service {
     );
 
     private final AmazonS3 amazonS3;
-    private final BucketS3 bucketS3;
+    private final S3 s3;
 
     public String replaceFile(String nameOldFile, PhotoVariantRequestDTO dto) {
         String url = this.uploadFile(dto);
@@ -41,16 +40,9 @@ public class StorageS3Service {
 
     public String uploadFile(PhotoVariantRequestDTO dto) {
         DataSize dataSize = DataSize.parse(MAX_SIZE_PHOTO_MB);
-
-        if (dto.size() > dataSize.toBytes()) {
-            throw new PhotoStorageException(String.format("Cannot possible ot upload files larger than %s.", MAX_SIZE_PHOTO_MB));
-        }
-
-        if (!ALLOWED_CONTENT_TYPE.contains(dto.contentType())) {
-            throw new StorageContentTypeException(String.format("The request does not accept the ContentType of file '%s'.", dto.contentType()));
-        }
-
         String pathFile = getPathFile(dto.name());
+
+        validateFile(dto, dataSize);
 
         try {
             var objectMetaData = new ObjectMetadata();
@@ -58,15 +50,14 @@ public class StorageS3Service {
             objectMetaData.setContentLength(dto.size());
 
             var putObject = new PutObjectRequest(
-                    bucketS3.getBucketName(),
+                    s3.getBucketName(),
                     pathFile,
                     dto.inputStream(),
                     objectMetaData
             );
 
             amazonS3.putObject(putObject);
-
-            return amazonS3.getUrl(bucketS3.getBucketName(), pathFile).toString();
+            return this.getUrlFile(dto.name());
         } catch (Exception e) {
             throw new PhotoStorageException("Cannot did possible to upload file from Amazon S3.");
         }
@@ -76,15 +67,32 @@ public class StorageS3Service {
         try {
             String pathFile = getPathFile(nameFile);
 
-            var deleteObject = new DeleteObjectRequest(bucketS3.getBucketName(), pathFile);
+            var deleteObject = new DeleteObjectRequest(s3.getBucketName(), pathFile);
             amazonS3.deleteObject(deleteObject);
         } catch (Exception e) {
             throw new PhotoStorageException("Cannot did possible to delete file in Amazon S3.");
         }
     }
 
+    public String getUrlFile(String nameFile) {
+        String pathFile = this.getPathFile(nameFile);
+        return amazonS3.getUrl(s3.getBucketName(), pathFile).toString();
+    }
+
+    private void validateFile(PhotoVariantRequestDTO dto, DataSize dataSize) {
+        if (dto.size() > dataSize.toBytes()) {
+            throw new PhotoStorageException(
+                    String.format("Cannot possible to upload files larger than %s.", MAX_SIZE_PHOTO_MB));
+        }
+
+        if (!ALLOWED_CONTENT_TYPE.contains(dto.contentType())) {
+            throw new StorageContentTypeException(
+                    String.format("Request does not accept the ContentType of file '%s'.", dto.contentType()));
+        }
+    }
+
     private String getPathFile(String nameFile) {
-        return String.format("%s/%s", bucketS3.getBucketDirectory(), nameFile);
+        return String.format("%s/%s", s3.getBucketDirectory(), nameFile);
     }
 
 }

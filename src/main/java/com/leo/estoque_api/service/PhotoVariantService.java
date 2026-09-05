@@ -4,15 +4,19 @@ import com.leo.estoque_api.dto.photovariant.PhotoVariantRequestDTO;
 import com.leo.estoque_api.dto.photovariant.PhotoVariantResponseDTO;
 import com.leo.estoque_api.exceptions.PhotoVariantNotFoundException;
 import com.leo.estoque_api.exceptions.ProductVariantNotFoundException;
-import com.leo.estoque_api.infra.StorageS3Service;
+import com.leo.estoque_api.infra.storage.StorageS3Service;
 import com.leo.estoque_api.model.PhotoVariant;
 import com.leo.estoque_api.model.ProductVariant;
 import com.leo.estoque_api.repository.PhotoVariantRepository;
 import com.leo.estoque_api.repository.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 
+import javax.print.attribute.standard.Media;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,6 +62,28 @@ public class PhotoVariantService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public String getUrl(UUID productId, UUID variantId, List<MediaType> acceptMediaTypes) throws HttpMediaTypeNotAcceptableException {
+        PhotoVariant photoVariant = photoRepository.findById(productId, variantId)
+                .orElseThrow(() -> new PhotoVariantNotFoundException(productId, variantId));
+
+        extracted(acceptMediaTypes, photoVariant);
+
+        return storageS3.getUrlFile(photoVariant.getName());
+    }
+
+    public PhotoVariantResponseDTO findById(UUID productId, UUID variantId) {
+        PhotoVariant photoVariant = photoRepository.findById(productId, variantId)
+                .orElseThrow(() -> new PhotoVariantNotFoundException(productId, variantId));
+
+        return new PhotoVariantResponseDTO(
+                photoVariant.getId(),
+                photoVariant.getName(),
+                photoVariant.getContentType(),
+                photoVariant.getUrl(),
+                photoVariant.getSize());
+    }
+
     @Transactional
     public void delete(UUID productId, UUID variantId) {
         PhotoVariant photoVariant = photoRepository.findById(productId, variantId)
@@ -65,6 +91,17 @@ public class PhotoVariantService {
 
         photoRepository.delete(photoVariant);
         storageS3.removeFile(photoVariant.getName());
+    }
+
+    private void extracted(List<MediaType> acceptMediaTypes, PhotoVariant photoVariant) throws HttpMediaTypeNotAcceptableException {
+        MediaType mediaTypePhoto = MediaType.parseMediaType(photoVariant.getContentType());
+
+        boolean accept = acceptMediaTypes.stream()
+                .anyMatch(mediaType -> mediaType.isCompatibleWith(mediaTypePhoto));
+
+        if (!accept) {
+            throw new HttpMediaTypeNotAcceptableException(acceptMediaTypes);
+        }
     }
 
 }
