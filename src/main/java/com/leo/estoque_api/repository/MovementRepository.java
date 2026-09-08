@@ -1,7 +1,6 @@
 package com.leo.estoque_api.repository;
 
 import com.leo.estoque_api.model.Movement;
-import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -18,6 +16,6 @@ public interface MovementRepository extends JpaRepository<Movement, Long>, JpaSp
     @Query("FROM Movement m JOIN FETCH m.productVariant JOIN FETCH m.user")
     Page<Movement> findAll(Pageable pageable);
 
-    List<Movement> findByUserId(UUID userId);
+    Page<Movement> findByUserId(UUID userId, Pageable pageable);
 
 }

@@ -1,7 +1,10 @@
 package com.leo.estoque_api.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -22,10 +25,12 @@ public class ProductVariant {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    private String imageUrl;
+
     @Column(unique = true)
     private String sku;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 40)
     private String model;
 
     @Column(nullable = false)

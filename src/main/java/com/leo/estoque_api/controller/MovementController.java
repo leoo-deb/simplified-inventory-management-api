@@ -27,7 +27,7 @@ public class MovementController {
         try {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(movementService.registerMovement(dto));
+                    .body(movementService.register(dto));
         } catch (ProductVariantNotFoundException e) {
             throw new BusinessRuleException(e.getMessage(), e);
         }

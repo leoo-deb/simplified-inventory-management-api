@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public record ProductVariantResponseDTO(
         UUID id,
+        String imageUrl,
         String sku,
         String model,
         Long stock,

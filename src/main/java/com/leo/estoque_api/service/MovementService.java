@@ -5,9 +5,11 @@ import com.leo.estoque_api.dto.movement.MovementMapper;
 import com.leo.estoque_api.dto.movement.MovementRequestDTO;
 import com.leo.estoque_api.dto.movement.MovementResponseDTO;
 import com.leo.estoque_api.exceptions.BusinessRuleException;
+import com.leo.estoque_api.exceptions.ProductVariantNotFoundException;
 import com.leo.estoque_api.model.Movement;
 import com.leo.estoque_api.model.ProductVariant;
 import com.leo.estoque_api.repository.MovementRepository;
+import com.leo.estoque_api.repository.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +23,7 @@ import static com.leo.estoque_api.repository.specs.MovementSpecs.byFilters;
 public class MovementService {
 
     private final MovementRepository movementRepository;
-    private final ProductVariantService productVariantService;
+    private final ProductVariantRepository productRepository;
     private final MovementMapper movementMapper;
 
     @Transactional(readOnly = true)
@@ -32,8 +34,9 @@ public class MovementService {
     }
 
     @Transactional
-    public MovementResponseDTO registerMovement(MovementRequestDTO dto) {
-        ProductVariant productVariant = productVariantService.findById(dto.variantId());
+    public MovementResponseDTO register(MovementRequestDTO dto) {
+        ProductVariant productVariant = productRepository.findById(dto.variantId())
+                .orElseThrow(() -> new ProductVariantNotFoundException(dto.variantId()));
 
         Movement movement = movementMapper.toMovement(dto);
         Long stockCurrent = productVariant.getStock();

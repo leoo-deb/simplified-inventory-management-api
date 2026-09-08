@@ -1,7 +1,6 @@
 package com.leo.estoque_api.repository;
 
 import com.leo.estoque_api.model.ProductVariant;
-import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +13,7 @@ import java.util.UUID;
 @Repository
 public interface ProductVariantRepository extends JpaRepository<ProductVariant, UUID> {
 
-    @Query("FROM ProductVariant v JOIN FETCH v.product")
+    @Query("FROM ProductVariant v JOIN FETCH v.product p JOIN FETCH p.category")
     Page<ProductVariant> findAll(Pageable pageable);
 
     Page<ProductVariant> findAllByProductId(UUID productId, Pageable pageable);
@@ -22,6 +21,8 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
     @Query("FROM ProductVariant v WHERE v.product.id = :productId AND v.id = :variantId")
     Optional<ProductVariant> findById(UUID productId, UUID variantId);
 
-    Optional<ProductVariant> findByIdAndSku(UUID id, String sku);
+    Optional<ProductVariant> findByIdAndSkuIgnoreCase(UUID id, String sku);
+
+    boolean existsBySkuIgnoreCase(String sku);
 
 }

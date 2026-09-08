@@ -33,7 +33,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             "and if the problem persists, contact a system administrator.";
 
     @Override
-    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
+                                                                      HttpHeaders headers,
+                                                                      HttpStatusCode status,
+                                                                      WebRequest request) {
+        String message = ex.getMessage();
+        String requestPath = request.getDescription(false).replace("uri=", "");
+        TypeError type = TypeError.INVALID_BODY;
+
+        ErrorResponse errorResponse = createErrorResponse(
+                (HttpStatus) status,
+                type,
+                requestPath,
+                message
+        ).build();
+
+        return handleExceptionInternal(ex, errorResponse, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex,
+                                                                     HttpHeaders headers,
+                                                                     HttpStatusCode status,
+                                                                     WebRequest request) {
         TypeError type = TypeError.INVALID_BODY;
         String requestPath = request.getDescription(false).replace("uri=", "");
 
@@ -200,7 +222,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
     }
 
-    public ErrorResponse.ErrorResponseBuilder createErrorResponse(HttpStatus status, TypeError type, String path, String message) {
+    public ErrorResponse.ErrorResponseBuilder createErrorResponse(HttpStatus status,
+                                                                  TypeError type,
+                                                                  String path,
+                                                                  String message) {
         return ErrorResponse.builder()
                 .timestamp(OffsetDateTime.now())
                 .path(path)
