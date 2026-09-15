@@ -4,6 +4,7 @@ import com.leo.estoque_api.dto.productvariant.ProductVariantMapper;
 import com.leo.estoque_api.dto.productvariant.ProductVariantRequestDTO;
 import com.leo.estoque_api.dto.productvariant.ProductVariantResponseDTO;
 import com.leo.estoque_api.exceptions.BusinessRuleException;
+import com.leo.estoque_api.exceptions.ConflictException;
 import com.leo.estoque_api.exceptions.ProductNotFoundException;
 import com.leo.estoque_api.exceptions.ProductVariantNotFoundException;
 import com.leo.estoque_api.infra.storage.StorageS3Service;
@@ -57,7 +58,7 @@ public class ProductVariantService {
         }
 
         if (variantRepository.existsBySkuIgnoreCase(dto.sku())) {
-            throw new BusinessRuleException(
+            throw new ConflictException(
                     String.format("Product Variant with SKU '%s' already exists", dto.sku()));
         }
 
@@ -85,6 +86,7 @@ public class ProductVariantService {
         variant.toDeactivate();
     }
 
+    @Transactional(readOnly = true)
     public ProductVariantResponseDTO findBySku(UUID productId, String sku) {
         ProductVariant productVariant = variantRepository.findByProductIdAndSkuIgnoreCase(productId, sku)
                 .orElseThrow(() -> new ProductVariantNotFoundException(productId, sku));

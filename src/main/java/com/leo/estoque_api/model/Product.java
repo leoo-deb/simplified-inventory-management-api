@@ -1,6 +1,6 @@
 package com.leo.estoque_api.model;
 
-import com.leo.estoque_api.exceptions.BusinessRuleException;
+import com.leo.estoque_api.exceptions.ConflictException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -57,7 +57,7 @@ public class Product {
 
     public void toActive() {
         if (this.active) {
-            throw new BusinessRuleException("This product already is active.");
+            throw new ConflictException("This product already is active.");
         }
 
         setActive(Boolean.TRUE);
@@ -65,7 +65,7 @@ public class Product {
 
     public void toDeactivate() {
         if (!this.active) {
-            throw new BusinessRuleException("This product already is deactivated.");
+            throw new ConflictException("This product already is deactivated.");
         }
 
         setActive(Boolean.FALSE);

@@ -1,5 +1,6 @@
 package com.leo.estoque_api.exceptions.handle;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.util.List;
 @Builder
 public class ErrorResponse {
 
+    @JsonFormat(pattern = "YYYY-MM-dd'T'HH-mm-ss")
     private OffsetDateTime timestamp;
     private String path;
     private Integer status;

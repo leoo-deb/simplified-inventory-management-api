@@ -7,6 +7,7 @@ public enum TypeError {
 
     ENTITY_NOT_FOUND("Entity not found"),
     BUSINESS_ROLE_VIOLATION("Business Rule Violation"),
+    CONFLICT("Data Conflict"),
     SYSTEM_ERROR("Server error"),
     INVALID_DATA("Invalid Data"),
     INVALID_PARAMETER("Invalid Parameter"),

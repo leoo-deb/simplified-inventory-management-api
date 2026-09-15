@@ -17,8 +17,24 @@ public class ProductSpecs {
 
             var predicates = new ArrayList<Predicate>();
 
+            boolean disabled;
+
+            if (filters.includeDisabled() != null) {
+                disabled = filters.includeDisabled();
+            } else {
+                disabled = false;
+            }
+
             if (filters.categoryId() != null) {
                 predicates.add(build.equal(root.get("category").get("id"), filters.categoryId()));
+            }
+
+            if (!disabled) {
+                predicates.add(build.equal(root.get("active"), true));
+            }
+
+            if (filters.active() != null) {
+                predicates.add(build.equal(root.get("active"), filters.active()));
             }
 
             if (filters.name() != null) {

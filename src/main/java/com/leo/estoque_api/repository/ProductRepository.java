@@ -18,8 +18,6 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
     @Query("FROM Product p JOIN FETCH p.category")
     Page<Product> findAll(Pageable pageable);
 
-    Page<Product> findAllByActiveTrue(Pageable pageable);
-
     boolean existsByNameIgnoreCase(String name);
 
     Page<Product> findAllByCategoryId(Long id, Pageable pageable);

@@ -96,7 +96,7 @@ src/main/java/com/leo/estoque_api/
 ### Passos para rodar
 
 1. **Clone o repositório:**
-   
+
 ```bash
 git clone [https://github.com/SEU_USUARIO/estoque-api.git](https://github.com/SEU_USUARIO/estoque-api.git)
 cd estoque-api
@@ -105,14 +105,14 @@ cd estoque-api
 ### Passos para rodar
 
 1. **Clone o repositório:**
-   
+
 ```bash
 git clone [https://github.com/SEU_USUARIO/estoque-api.git](https://github.com/SEU_USUARIO/estoque-api.git)
 cd estoque-api
 ```
 
 2. **Configure as Variáveis de Ambiente:**
-Renomeie ou edite o arquivo `src/main/resources/application.properties` com as credenciais do seu banco de dados e da AWS S3:
+   Renomeie ou edite o arquivo `src/main/resources/application.properties` com as credenciais do seu banco de dados e da AWS S3:
 
 ```properties
 # Configurações do Banco de Dados
@@ -161,14 +161,14 @@ Aqui está o trecho atualizado, trocando a seção de Contribuição pelas **Pr�
 ### Passos para rodar
 
 1. **Clone o repositório:**
-   
+
 ```bash
 git clone [https://github.com/SEU_USUARIO/estoque-api.git](https://github.com/SEU_USUARIO/estoque-api.git)
 cd estoque-api
 ```
 
 2. **Configure as Variáveis de Ambiente:**
-Renomeie ou edite o arquivo `src/main/resources/application.properties` com as credenciais do seu banco de dados e da AWS S3:
+   Renomeie ou edite o arquivo `src/main/resources/application.properties` com as credenciais do seu banco de dados e da AWS S3:
 
 ```properties
 # Configurações do Banco de Dados

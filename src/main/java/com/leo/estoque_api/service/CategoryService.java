@@ -7,6 +7,7 @@ import com.leo.estoque_api.dto.product.ProductMapper;
 import com.leo.estoque_api.dto.product.ProductResponseDTO;
 import com.leo.estoque_api.exceptions.BusinessRuleException;
 import com.leo.estoque_api.exceptions.CategoryNotFoundException;
+import com.leo.estoque_api.exceptions.ConflictException;
 import com.leo.estoque_api.model.Category;
 import com.leo.estoque_api.model.Product;
 import com.leo.estoque_api.repository.CategoryRepository;
@@ -50,7 +51,7 @@ public class CategoryService {
         Optional<Category> categoryExists = categoryRepository.findByNameAndActiveTrueIgnoreCase(dto.name());
 
         if (categoryExists.isPresent()) {
-            throw new BusinessRuleException(String.format("Category with name: '%s' already exists", dto.name()));
+            throw new ConflictException(String.format("Category with name: '%s' already exists", dto.name()));
         }
 
         Category category = categoryMapper.toCategory(dto);
@@ -65,7 +66,7 @@ public class CategoryService {
 
         if (!category.getName().equalsIgnoreCase(dto.name())
                 && categoryRepository.existsByNameIgnoreCase(dto.name())) {
-            throw new BusinessRuleException(String.format("Category with name: '%s' already exists.", dto.name()));
+            throw new ConflictException(String.format("Category with name: '%s' already exists.", dto.name()));
         }
 
         categoryMapper.copyCategoryFromDto(dto, category);

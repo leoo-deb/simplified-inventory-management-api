@@ -2,11 +2,12 @@ package com.leo.estoque_api.service;
 
 import com.leo.estoque_api.dto.product.ProductFilters;
 import com.leo.estoque_api.dto.product.ProductMapper;
-import com.leo.estoque_api.exceptions.CategoryNotFoundException;
-import com.leo.estoque_api.exceptions.ProductNotFoundException;
 import com.leo.estoque_api.dto.product.ProductRequestDTO;
 import com.leo.estoque_api.dto.product.ProductResponseDTO;
 import com.leo.estoque_api.exceptions.BusinessRuleException;
+import com.leo.estoque_api.exceptions.CategoryNotFoundException;
+import com.leo.estoque_api.exceptions.ConflictException;
+import com.leo.estoque_api.exceptions.ProductNotFoundException;
 import com.leo.estoque_api.model.Category;
 import com.leo.estoque_api.model.Product;
 import com.leo.estoque_api.repository.CategoryRepository;
@@ -34,19 +35,10 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Page<ProductResponseDTO> getAllProducts(Pageable pageable,
-                                                   Boolean includeDisabled,
                                                    ProductFilters filters) {
-        Page<ProductResponseDTO> productResponsePage;
 
-        if (includeDisabled) {
-            productResponsePage = productRepository.findAll(byFilters(filters), pageable)
-                    .map(productMapper::toProductDTO);
-        } else {
-            productResponsePage = productRepository.findAllByActiveTrue(pageable)
-                    .map(productMapper::toProductDTO);
-        }
-
-        return productResponsePage;
+        return productRepository.findAll(byFilters(filters), pageable)
+                .map(productMapper::toProductDTO);
     }
 
     @Transactional(readOnly = true)
@@ -61,8 +53,9 @@ public class ProductService {
         product.setActive(Boolean.TRUE);
 
         if (productRepository.existsByNameIgnoreCase(dto.name())) {
-            throw new BusinessRuleException(String.format("Product with name '%s' already exists.", dto.name()));
+            throw new ConflictException(String.format("Product with name '%s' already exists.", dto.name()));
         }
+
         validateProduct(product, dto);
 
         return productMapper.toProductDTO(productRepository.save(product));
@@ -75,7 +68,7 @@ public class ProductService {
 
         if (!productCurrent.getName().equalsIgnoreCase(dto.name())
                 && productRepository.existsByNameIgnoreCase(dto.name())) {
-            throw new BusinessRuleException(String.format("Product with name '%s' already exists.", dto.name()));
+            throw new ConflictException(String.format("Product with name '%s' already exists.", dto.name()));
         }
         validateProduct(productCurrent, dto);
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import com.leo.estoque_api.exceptions.BusinessRuleException;
+import com.leo.estoque_api.exceptions.ConflictException;
 import com.leo.estoque_api.exceptions.EntityNotFoundException;
 import com.leo.estoque_api.exceptions.StorageContentTypeException;
 import org.springframework.http.HttpHeaders;
@@ -155,6 +156,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String requestPath = request.getDescription(false).replace("uri=", "");
 
         ErrorResponse errorResponse = createErrorResponse(status, type, requestPath, MSG_GENERIC_ERROR).build();
+        return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Object> handleConflictException(ConflictException ex, WebRequest request) {
+        TypeError type = TypeError.CONFLICT;
+        HttpStatus status = HttpStatus.CONFLICT;
+        String requestPath = request.getDescription(false).replace("uri=", "");
+
+        ErrorResponse errorResponse = createErrorResponse(status, type, requestPath, ex.getMessage()).build();
         return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), status, request);
     }
 

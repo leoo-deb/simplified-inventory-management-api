@@ -9,6 +9,7 @@ public interface ProductVariantMapper {
 
     @Mapping(target = "productVariant.product", ignore = true)
     @Mapping(target = "productVariant.image", ignore = true)
+    @Mapping(target = "productVariant.active", ignore = true)
     ProductVariant toProductVariant(ProductVariantRequestDTO productVariantRequestDTO);
 
     ProductVariantResponseDTO toProductVariantDTO(ProductVariant productVariant);
