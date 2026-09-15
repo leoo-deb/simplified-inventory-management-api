@@ -146,15 +146,72 @@ A API está totalmente documentada utilizando o padrão OpenAPI. Para testar os 
 
 **Acesso Local:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html?utm_source=gemini)
 
-## 🤝 Contribuindo
+Aqui está o trecho atualizado, trocando a seção de Contribuição pelas **Próximas Atualizações**. Adicionei uns emojis e formatação em lista para deixar o visual bem profissional no seu repositório:
 
-Contribuições são sempre bem-vindas! Se você deseja colaborar com este projeto:
+```markdown
+## 🛠️ Como Executar Localmente
 
-1. Faça um Fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaNovaFeature`)
-3. Faça o commit das suas alterações (`git commit -m 'Add: nova feature x'`)
-4. Faça o push para a branch (`git push origin feature/MinhaNovaFeature`)
-5. Abra um Pull Request
+### Pré-requisitos
+
+- Java 17 ou superior
+- Maven 3.8+
+- Banco de Dados (PostgreSQL/MySQL configurado localmente ou via Docker)
+- Credenciais da AWS (Para uso do S3)
+
+### Passos para rodar
+
+1. **Clone o repositório:**
+   
+```bash
+git clone [https://github.com/SEU_USUARIO/estoque-api.git](https://github.com/SEU_USUARIO/estoque-api.git)
+cd estoque-api
+
+```
+
+2. **Configure as Variáveis de Ambiente:**
+Renomeie ou edite o arquivo `src/main/resources/application.properties` com as credenciais do seu banco de dados e da AWS S3:
+
+```properties
+# Configurações do Banco de Dados
+spring.datasource.url=jdbc:postgresql://localhost:5432/estoque_db
+spring.datasource.username=seu_user
+spring.datasource.password=sua_senha
+
+# Configurações AWS S3
+aws.s3.bucket-name=seu-bucket-name
+aws.region=sa-east-1
+aws.access-key-id=SUA_ACCESS_KEY
+aws.secret-access-key=SUA_SECRET_KEY
+
+```
+
+3. **Compile e baixe as dependências:**
+
+```bash
+./mvnw clean install
+
+```
+
+4. **Inicie a aplicação:**
+
+```bash
+./mvnw spring-boot:run
+
+```
+
+*A API estará rodando em `http://localhost:8080*`
+
+## 📚 Documentação da API (Swagger)
+
+A API está totalmente documentada utilizando o padrão OpenAPI. Para testar os endpoints, visualizar os schemas de *Request* e *Response* e verificar os códigos de status HTTP, acesse:
+
+**Acesso Local:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html?utm_source=gemini)
+
+## 🔜 Próximas Atualizações
+
+* [ ] Configuração do CORS
+* [ ] Implementação de Segurança com Spring Security + JWT
+* [ ] Cobertura de Testes Unitários
 
 ## 📝 Licença
 
