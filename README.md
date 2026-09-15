@@ -100,6 +100,7 @@ src/main/java/com/leo/estoque_api/
 ```bash
 git clone [https://github.com/SEU_USUARIO/estoque-api.git](https://github.com/SEU_USUARIO/estoque-api.git)
 cd estoque-api
+```
 
 ### Passos para rodar
 
@@ -148,7 +149,6 @@ A API está totalmente documentada utilizando o padrão OpenAPI. Para testar os 
 
 Aqui está o trecho atualizado, trocando a seção de Contribuição pelas **Próximas Atualizações**. Adicionei uns emojis e formatação em lista para deixar o visual bem profissional no seu repositório:
 
-```markdown
 ## 🛠️ Como Executar Localmente
 
 ### Pré-requisitos
@@ -165,7 +165,6 @@ Aqui está o trecho atualizado, trocando a seção de Contribuição pelas **Pr�
 ```bash
 git clone [https://github.com/SEU_USUARIO/estoque-api.git](https://github.com/SEU_USUARIO/estoque-api.git)
 cd estoque-api
-
 ```
 
 2. **Configure as Variáveis de Ambiente:**
