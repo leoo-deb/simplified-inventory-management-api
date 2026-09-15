@@ -1,11 +1,11 @@
-# 📦 Estoque API
+# 📦 Stock Facillity Management API
 
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
 
-Uma API RESTful desenvolvida em **Java + Spring Boot** para gerenciamento completo de estoque. O sistema permite o controle de categorias, produtos, variações de produtos (cores, tamanhos, etc.), upload de imagens para a nuvem e registro detalhado de movimentações (entradas e saídas).
+Uma API REST desenvolvida em **Java + Spring Boot** para gerenciamento completo de estoque. O sistema permite o controle de categorias, produtos, variações de produtos (cores, tamanhos, etc.), upload de imagens para a nuvem e registro detalhado de movimentações (entradas e saídas).
 
 ## ✨ Funcionalidades
 
