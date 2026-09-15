@@ -18,16 +18,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
 public class ProductController {
 
     @Autowired
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductResponseDTO> save(@RequestBody @Valid ProductRequestDTO productRequestDTO) {
+    public ResponseEntity<ProductResponseDTO> saveProduct(@RequestBody @Valid ProductRequestDTO productRequestDTO) {
         try {
-            ProductResponseDTO productResponse = productService.registrationProduct(productRequestDTO);
+            ProductResponseDTO productResponse = productService.registration(productRequestDTO);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(productResponse);
@@ -37,8 +37,12 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<ProductResponseDTO>> listAllProducts(Pageable pageable, ProductFilters filters) {
-        return ResponseEntity.ok(new PageResponse<>(productService.getAllProducts(pageable, filters)));
+    public ResponseEntity<PageResponse<ProductResponseDTO>> listAllProducts(@RequestParam(required = false, defaultValue = "false") Boolean includeDisabled,
+                                                                            Pageable pageable,
+                                                                            ProductFilters filters) {
+        Page<ProductResponseDTO> productResponsePage =
+                productService.getAllProducts(pageable, includeDisabled, filters);
+        return ResponseEntity.ok(new PageResponse<>(productResponsePage));
     }
 
     @GetMapping("/categories/{categoryId}")
@@ -50,16 +54,16 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> findById(@PathVariable UUID id) {
-        ProductResponseDTO productResponseDTO = productService.findDtoById(id);
+    public ResponseEntity<ProductResponseDTO> findProductById(@PathVariable UUID id) {
+        ProductResponseDTO productResponseDTO = productService.findById(id);
         return ResponseEntity.ok(productResponseDTO);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> update(@PathVariable UUID id,
+    public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable UUID id,
                                                      @RequestBody @Valid ProductRequestDTO productRequestDTO) {
         try {
-            ProductResponseDTO productResponseDTO = productService.updateProduct(id, productRequestDTO);
+            ProductResponseDTO productResponseDTO = productService.update(id, productRequestDTO);
             return ResponseEntity.ok(productResponseDTO);
         } catch (CategoryNotFoundException e) {
             throw new BusinessRuleException(e.getMessage(), e);
@@ -67,14 +71,14 @@ public class ProductController {
     }
 
     @PutMapping("/{id}/activation")
-    public ResponseEntity<Void> activation(@PathVariable UUID id) {
-        productService.toActiveProduct(id);
+    public ResponseEntity<Void> activationProduct(@PathVariable UUID id) {
+        productService.toActive(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{id}/activation")
-    public ResponseEntity<Void> deactivation(@PathVariable UUID id) {
-        productService.toInactiveProduct(id);
+    public ResponseEntity<Void> deactivationProduct(@PathVariable UUID id) {
+        productService.toDeactivate(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

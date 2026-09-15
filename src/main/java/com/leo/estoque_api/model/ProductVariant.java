@@ -1,5 +1,6 @@
 package com.leo.estoque_api.model;
 
+import com.leo.estoque_api.exceptions.BusinessRuleException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,8 +40,26 @@ public class ProductVariant {
     @Column(nullable = false)
     private BigDecimal price;
 
+    @Column(nullable = false)
+    private Boolean active;
+
     @Column(columnDefinition = "TEXT")
     private String observation;
 
+    public void toActive() {
+        if (this.active) {
+            throw new BusinessRuleException("This variant already is active.");
+        }
+
+        setActive(Boolean.TRUE);
+    }
+
+    public void toDeactivate() {
+        if (!this.active) {
+            throw new BusinessRuleException("This variant already is deactivated.");
+        }
+
+        setActive(Boolean.FALSE);
+    }
 
 }

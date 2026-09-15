@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/products/{productId}/variants")
+@RequestMapping("/api/products/{productId}/variants")
 public class ProductVariantController {
 
     @Autowired
@@ -32,28 +32,29 @@ public class ProductVariantController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<ProductVariantResponseDTO>> findAllByProductId(@PathVariable UUID productId,
-                                                                                      Pageable pageable) {
-        Page<ProductVariantResponseDTO> productVariantResponseDTOs = productVariantService
-                .getAllProductVariants(productId, pageable);
+    public ResponseEntity<PageResponse<ProductVariantResponseDTO>> listAllByProduct(@PathVariable UUID productId,
+                                                                                    @RequestParam(required = false, defaultValue = "false") Boolean includeDisabled,
+                                                                                    Pageable pageable) {
+        Page<ProductVariantResponseDTO> productVariantResponseDTOs =
+                productVariantService.getAllProductVariants(productId, includeDisabled, pageable);
         return ResponseEntity.ok(new PageResponse<>(productVariantResponseDTOs));
     }
 
     @GetMapping("/{variantId}")
-    public ResponseEntity<ProductVariantResponseDTO> findById(@PathVariable UUID productId,
+    public ResponseEntity<ProductVariantResponseDTO> findVariantById(@PathVariable UUID productId,
                                                               @PathVariable UUID variantId) {
         ProductVariantResponseDTO variantResponse = productVariantService.findById(productId, variantId);
         return ResponseEntity.ok(variantResponse);
     }
 
     @GetMapping("/by-sku")
-    public ResponseEntity<ProductVariantResponseDTO> findBySku(@PathVariable UUID productId,
+    public ResponseEntity<ProductVariantResponseDTO> findVariantBySku(@PathVariable UUID productId,
                                                                @RequestParam String sku) {
         return ResponseEntity.ok(productVariantService.findBySku(productId, sku));
     }
 
     @GetMapping("/{variantId}/image")
-    public ResponseEntity<String> getImage(@PathVariable UUID productId,
+    public ResponseEntity<String> getUrlImage(@PathVariable UUID productId,
                                            @PathVariable UUID variantId) {
         String url = productVariantService.getImageUrl(productId, variantId);
         return ResponseEntity
@@ -77,6 +78,22 @@ public class ProductVariantController {
     @DeleteMapping("/{variantId}/image")
     public ResponseEntity<Void>  deleteImage(@PathVariable UUID productId, @PathVariable UUID variantId) {
         productVariantService.removeImage(productId, variantId);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
+    @PutMapping("/{variantId}")
+    public ResponseEntity<Void> ActivationVariant(@PathVariable UUID productId, @PathVariable UUID variantId) {
+        productVariantService.toActivate(productId, variantId);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
+    @DeleteMapping("/{variantId}")
+    public ResponseEntity<Void> deactivationVariant(@PathVariable UUID productId, @PathVariable UUID variantId) {
+        productVariantService.toDeactivate(productId, variantId);
         return ResponseEntity
                 .noContent()
                 .build();

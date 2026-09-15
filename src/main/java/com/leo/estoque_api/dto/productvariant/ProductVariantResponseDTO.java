@@ -10,6 +10,7 @@ public record ProductVariantResponseDTO(
         String model,
         Long stock,
         BigDecimal price,
+        Boolean active,
         String observation
 ) {
 }

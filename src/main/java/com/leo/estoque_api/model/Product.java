@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +63,9 @@ public class Product {
         setActive(Boolean.TRUE);
     }
 
-    public void toInactive() {
+    public void toDeactivate() {
         if (!this.active) {
-            throw new BusinessRuleException("This product already is inactive.");
+            throw new BusinessRuleException("This product already is deactivated.");
         }
 
         setActive(Boolean.FALSE);

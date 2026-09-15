@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/movements")
+@RequestMapping("/api/movements")
 public class MovementController {
 
     @Autowired

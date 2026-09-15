@@ -25,10 +25,6 @@ public class ProductSpecs {
                 predicates.add(build.equal(root.get("name"), filters.name()));
             }
 
-            if (filters.status() != null) {
-                predicates.add(build.equal(root.get("active"), filters.status()));
-            }
-
             if (filters.startCreateData() != null) {
                 predicates.add(build.greaterThanOrEqualTo(root.get("createdAt"), filters.startCreateData()));
             }

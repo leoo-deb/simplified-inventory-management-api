@@ -22,7 +22,13 @@ public class Category {
     @Column(nullable = false, length = 30)
     private String name;
 
+    private Boolean active;
+
     @OneToMany(mappedBy = "category")
     private List<Product> products = new ArrayList<>();
+
+    public boolean isActive() {
+        return active;
+    }
 
 }
