@@ -40,25 +40,22 @@ Abaixo estão os principais endpoints da aplicação. A documentação interativ
 | `GET` | `/categories/{id}` | Busca os detalhes de uma categoria específica. |
 | `POST` | `/categories` | Cadastra uma nova categoria. |
 | `PUT` | `/categories/{id}` | Atualiza os dados de uma categoria existente. |
-| `DELETE` | `/categories/{id}` | Remove uma categoria (se não houver produtos vinculados). |
+| `DELETE` | `/categories/{id}` | Desativa uma categoria (Soft-delete). |
 
-### 📦 Produtos
+### 📦 Produtos e Variações
 | Método | Endpoint | Descrição |
 |---|---|---|
 | `GET` | `/products` | Lista os produtos (suporta paginação e filtros dinâmicos). |
 | `GET` | `/products/{id}` | Retorna as informações de um produto específico. |
+| `GET` | `/products/variants/{id}` | Detalha uma variação (cor, tamanho, foto, etc). |
 | `POST` | `/products` | Cria um novo produto base. |
+| `POST` | `/products/variants` | Adiciona uma nova variação a um produto. |
 | `PUT` | `/products/{id}` | Atualiza um produto. |
-| `DELETE` | `/products/{id}` | Remove um produto do sistema. |
-
-### 🎨 Variações de Produtos (Product Variants)
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `GET` | `/product-variants/{id}` | Detalha uma variação (cor, tamanho, foto, etc). |
-| `POST` | `/product-variants` | Adiciona uma nova variação a um produto. |
-| `POST` | `/product-variants/{id}/photos`| Faz o upload de uma imagem (via AWS S3) para a variação. |
-| `PUT` | `/product-variants/{id}` | Atualiza os dados da variação. |
-| `DELETE` | `/product-variants/{id}` | Exclui uma variação de produto. |
+| `PUT` | `/products/variants/{id}` | Atualiza os dados da variação. |
+| `PATCH` | `/products/variants/{id}/photos`| Faz o upload de uma imagem (via AWS S3) para a variação. |
+| `DELETE` | `/products/variants/{id}/photos`| Faz a remoção de uma imagem (via AWS S3) para a variação. |
+| `DELETE` | `/products/{id}` | Desativa um produto do sistema. (Soft-delete) |
+| `DELETE` | `/products/variants/{id}` | Desativa uma variação de produto. (Soft-delete) |
 
 ### 🔄 Movimentações (Entradas e Saídas)
 | Método | Endpoint | Descrição |
