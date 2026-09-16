@@ -22,7 +22,7 @@ Uma API REST desenvolvida em **Java + Spring Boot** para gerenciamento completo 
 * **Linguagem:** Java
 * **Framework:** Spring Boot
 * **Persistência de Dados:** Spring Data JPA / Hibernate
-* **Banco de Dados:** PostgreSQL / MySQL (Configurável via `application.properties`)
+* **Banco de Dados:** H2 Database
 * **Migrações:** Flyway ou Liquibase (Gerenciamento no diretório `db/migration`)
 * **Mapeamento de Objetos:** MapStruct (Conversão entre Entidades e DTOs)
 * **Storage:** Amazon S3 (AWS SDK)
