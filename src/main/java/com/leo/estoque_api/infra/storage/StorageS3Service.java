@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.leo.estoque_api.exceptions.PhotoStorageException;
+import com.leo.estoque_api.exceptions.StorageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -65,7 +65,7 @@ public class StorageS3Service {
             s3Client.putObject(putObject);
             return s3Client.getUrl(bucketName, key).toString();
         } catch (Exception e) {
-            throw new PhotoStorageException("Cannot did possible to upload file from Amazon S3.");
+            throw new StorageException("Cannot did possible to upload file from Amazon S3.");
         }
     }
 
@@ -76,7 +76,7 @@ public class StorageS3Service {
             var deleteObject = new DeleteObjectRequest(bucketName, key);
             s3Client.deleteObject(deleteObject);
         } catch (Exception e) {
-            throw new PhotoStorageException("Cannot did possible to delete file in Amazon S3.");
+            throw new StorageException("Cannot did possible to delete file in Amazon S3.");
         }
     }
 
@@ -84,7 +84,7 @@ public class StorageS3Service {
         DataSize dataSize = DataSize.parse(MAX_SIZE_PHOTO_MB);
 
         if (file.getSize() > dataSize.toBytes()) {
-            throw new PhotoStorageException(
+            throw new StorageException(
                     String.format("Cannot possible to upload files larger than %s.", MAX_SIZE_PHOTO_MB));
         }
 

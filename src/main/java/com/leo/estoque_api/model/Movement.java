@@ -42,7 +42,7 @@ public class Movement {
     private User user;
 
     @CreationTimestamp
-    @Column(columnDefinition = "datetime", nullable = false)
+    @Column(nullable = false)
     private OffsetDateTime dateTime;
 
     @Column(columnDefinition = "TEXT")

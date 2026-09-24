@@ -41,11 +41,9 @@ public class Product {
     private Boolean active;
 
     @CreationTimestamp
-    @Column(nullable = false, columnDefinition = "datetime")
     private OffsetDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false, columnDefinition = "datetime")
     private OffsetDateTime updatedAt;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

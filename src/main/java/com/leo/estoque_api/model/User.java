@@ -35,15 +35,12 @@ public class User {
     private Boolean active;
 
     @CurrentTimestamp
-    @Column(columnDefinition = "datetime")
     private OffsetDateTime lastLogin;
 
     @CreationTimestamp
-    @Column(columnDefinition = "datetime")
     private OffsetDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(columnDefinition = "datetime")
     private OffsetDateTime updatedAt;
 
 }
