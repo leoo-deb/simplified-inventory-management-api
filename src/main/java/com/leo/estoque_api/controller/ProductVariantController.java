@@ -151,7 +151,7 @@ public class ProductVariantController {
             @ApiResponse(responseCode = "404", description = "Variante não encontrada"),
             @ApiResponse(responseCode = "409", description = "Conflito ao ativar uma variante que já está ativada")
     })
-    @PutMapping("/{variantId}")
+    @PutMapping("/{variantId}/activation")
     public ResponseEntity<Void> activationVariant(@PathVariable UUID productId, @PathVariable UUID variantId) {
         productVariantService.toActivate(productId, variantId);
         return ResponseEntity
@@ -166,7 +166,7 @@ public class ProductVariantController {
             @ApiResponse(responseCode = "404", description = "Variante não encontrada"),
             @ApiResponse(responseCode = "409", description = "Conflito ao desativar uma variante que já está desativada")
     })
-    @DeleteMapping("/{variantId}")
+    @DeleteMapping("/{variantId}/activation")
     public ResponseEntity<Void> deactivationVariant(@PathVariable UUID productId, @PathVariable UUID variantId) {
         productVariantService.toDeactivate(productId, variantId);
         return ResponseEntity

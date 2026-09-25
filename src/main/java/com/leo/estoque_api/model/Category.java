@@ -33,9 +33,6 @@ public class Category {
     @CreationTimestamp
     private OffsetDateTime createdAt;
 
-    @UpdateTimestamp
-    private OffsetDateTime updatedAt;
-
     public boolean isActive() {
         return active;
     }

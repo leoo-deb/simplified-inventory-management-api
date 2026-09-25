@@ -32,7 +32,7 @@ public class Product {
     private String name;
 
     @Column(length = 500)
-    private String imageUrl;
+    private String imageBaselUrl;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -42,9 +42,6 @@ public class Product {
 
     @CreationTimestamp
     private OffsetDateTime createdAt;
-
-    @UpdateTimestamp
-    private OffsetDateTime updatedAt;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductVariant> variants = new ArrayList<>();

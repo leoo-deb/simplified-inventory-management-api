@@ -5,6 +5,8 @@ import lombok.Getter;
 @Getter
 public enum TypeMovement {
 
+    CREATED("Created"),
+    DEACTIVATE("Deactivate"),
     ENTRY("Entry"),
     EXIT("Exit"),
     ADJUSTMENT("Adjustment"),
