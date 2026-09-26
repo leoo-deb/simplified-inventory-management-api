@@ -205,8 +205,8 @@ A API está totalmente documentada utilizando o padrão OpenAPI. Para testar os 
 
 ## 🔜 Próximas Atualizações
 
-* [ ] Configuração do CORS
-* [ ] Implementação de Segurança com Spring Security + JWT
+* [x] Configuração do CORS
+* [x] Implementação de Segurança com Spring Security + JWT
 * [ ] Cobertura de Testes Unitários
 
 ## 📝 Licença

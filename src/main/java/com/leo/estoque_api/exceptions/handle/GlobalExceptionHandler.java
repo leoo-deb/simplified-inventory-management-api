@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -156,6 +157,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String requestPath = request.getDescription(false).replace("uri=", "");
 
         ErrorResponse errorResponse = createErrorResponse(status, type, requestPath, MSG_GENERIC_ERROR).build();
+        return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
+        TypeError type = TypeError.CREDENTIALS_INVALID;
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        String requestPath = request.getDescription(false).replace("uri=", "");
+        String message = "Incorrect email or password.";
+
+        ErrorResponse errorResponse = createErrorResponse(status, type, requestPath, message)
+                .build();
         return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), status, request);
     }
 

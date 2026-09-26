@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum TypeError {
 
     ENTITY_NOT_FOUND("Entity not found"),
+    CREDENTIALS_INVALID("Invalidated credentials."),
     BUSINESS_ROLE_VIOLATION("Business Rule Violation"),
     CONFLICT("Data Conflict"),
     SYSTEM_ERROR("Server error"),

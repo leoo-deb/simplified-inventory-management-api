@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.event.spi.AbstractEvent;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -15,10 +17,10 @@ import java.util.UUID;
 @Table(name = "tb_products")
 @Data
 @Builder
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class Product extends AbstractAggregateRoot<Product> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

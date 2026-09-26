@@ -15,8 +15,6 @@ public interface ProductMapper {
     @Mapping(target = "category", ignore = true)
     Product toProduct(ProductRequestDTO productRequestDTO);
 
-    List<ProductResponseDTO> toCollectionProductDTO(List<Product> products);
-
     void copyProductFromDto(ProductRequestDTO productRequestDTO, @MappingTarget Product product);
 
 }

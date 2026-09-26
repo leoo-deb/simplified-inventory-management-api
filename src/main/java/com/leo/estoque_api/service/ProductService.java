@@ -36,7 +36,6 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<ProductResponseDTO> getAllProducts(Pageable pageable,
                                                    ProductFilters filters) {
-
         return productRepository.findAll(byFilters(filters), pageable)
                 .map(productMapper::toProductDTO);
     }
@@ -58,7 +57,9 @@ public class ProductService {
 
         validateProduct(product, dto);
 
-        return productMapper.toProductDTO(productRepository.save(product));
+        Product saved = productRepository.save(product);
+
+        return productMapper.toProductDTO(saved);
     }
 
     @Transactional
